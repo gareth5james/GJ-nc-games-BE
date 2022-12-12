@@ -68,7 +68,7 @@ describe("GET /api/reviews", () => {
       });
   });
 
-  it("the reviews are sorted in descending date order", () => {
+  test("the reviews are sorted in descending date order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -77,7 +77,7 @@ describe("GET /api/reviews", () => {
       });
   });
 
-  it("the reviews have a property 'comment-count' which accurately counts the number of comments on the review", () => {
+  test("the reviews have a property 'comment-count' which accurately counts the number of comments on the review", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -88,6 +88,47 @@ describe("GET /api/reviews", () => {
 
         expect(parseInt(reviews[12].comment_count)).toBe(0);
         expect(parseInt(reviews[4].comment_count)).toBe(3);
+      });
+  });
+});
+
+describe("5. GET /api/reviews/:review_id", () => {
+  it("returns 200 when given a valid in range id, with the chosen review", () => {
+    return request(app)
+      .get("/api/reviews/12")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(body).toEqual({
+          review_id: 12,
+          title: "Scythe; you're gonna need a bigger table!",
+          review_body:
+            "Spend 30 minutes just setting up all of the boards (!) meeple and decks, just to forget how to play. Scythe can be a lengthy game but really packs a punch if you put the time in. With beautiful artwork, countless scenarios and clever game mechanics, this board game is a must for any board game fanatic; just make sure you explain ALL the rules before you start playing with first timers or you may find they bring it up again and again.",
+          designer: "Jamey Stegmaier",
+          review_img_url:
+            "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+          votes: 100,
+          category: "social deduction",
+          owner: "mallionaire",
+          created_at: new Date(1611311824839),
+        });
+      });
+  });
+
+  it("returns a 404 when given a valid id, but one that does not exist in the database", () => {
+    return request(app)
+      .get("/api/reviews/12")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("No review with ID 12 in the database");
+      });
+  });
+
+  it("returns a 400 when passed an ID that is not a number", () => {
+    return request(app)
+      .get("/api/reviews/banana")
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad data type");
       });
   });
 });
