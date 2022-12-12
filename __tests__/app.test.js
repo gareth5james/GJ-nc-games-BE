@@ -98,7 +98,7 @@ describe("5. GET /api/reviews/:review_id", () => {
       .get("/api/reviews/12")
       .expect(200)
       .then(({ body: { review } }) => {
-        expect(body).toEqual({
+        expect(review).toEqual({
           review_id: 12,
           title: "Scythe; you're gonna need a bigger table!",
           review_body:
@@ -109,7 +109,7 @@ describe("5. GET /api/reviews/:review_id", () => {
           votes: 100,
           category: "social deduction",
           owner: "mallionaire",
-          created_at: new Date(1611311824839),
+          created_at: "2021-01-22T10:37:04.839Z",
         });
       });
   });
