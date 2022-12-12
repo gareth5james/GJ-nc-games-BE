@@ -1,15 +1,15 @@
 const app = require("../app/app.js");
 const db = require("../db/connection.js");
 const request = require("supertest");
-const seed = require("./seed.js");
-const testData = require("../db/data/test-data.js");
+const testData = require("../db/data/test-data/index.js");
+const seed = require("../db/seeds/seed.js");
 
 afterAll(() => {
   db.end();
 });
 
 beforeEach(() => {
-  seed(testData);
+  return seed(testData);
 });
 
 describe("handles bad paths", () => {
@@ -34,10 +34,12 @@ describe("GET /api/categories", () => {
         expect(categories).toHaveLength(4);
 
         categories.forEach((category) => {
-          expect.objectContaining({
-            slug: expect.any(String),
-            description: expect.any(String),
-          });
+          expect(category).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
         });
       });
   });
