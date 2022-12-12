@@ -5,3 +5,5 @@ exports.getReviews = (request, response, next) => {
     .then((reviews) => response.status(200).send({ reviews }))
     .catch(next);
 };
+
+exports.getReviewById = () => {};
