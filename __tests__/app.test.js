@@ -29,8 +29,6 @@ describe("GET /api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body: { categories } }) => {
-        expect(categories).toBeInstanceOf(Array);
-
         expect(categories).toHaveLength(4);
 
         categories.forEach((category) => {
@@ -41,6 +39,55 @@ describe("GET /api/categories", () => {
             })
           );
         });
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  it("returns status 200 and an array of review objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(13);
+
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  it("the reviews are sorted in descending date order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  it("the reviews have a property 'comment-count' which accurately counts the number of comments on the review", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        reviews.forEach((review) => {
+          expect(typeof parseInt(review.comment_count)).toBe("number");
+        });
+
+        expect(parseInt(reviews[12].comment_count)).toBe(0);
+        expect(parseInt(reviews[4].comment_count)).toBe(3);
       });
   });
 });
