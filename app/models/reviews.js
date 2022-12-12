@@ -11,8 +11,5 @@ exports.selectAllReviews = () => {
     reviews.created_at, reviews.votes, designer
     ORDER BY reviews.created_at DESC;`
     )
-    .then((result) => {
-      console.log(result.rows);
-      return result.rows;
-    });
+    .then((result) => result.rows);
 };
