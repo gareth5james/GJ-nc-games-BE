@@ -1,4 +1,4 @@
-const { selectAllReviews } = require("../models/reviews.js");
+const { selectAllReviews, selectReviewById } = require("../models/reviews.js");
 
 exports.getReviews = (request, response, next) => {
   selectAllReviews()
@@ -6,4 +6,8 @@ exports.getReviews = (request, response, next) => {
     .catch(next);
 };
 
-exports.getReviewById = () => {};
+exports.getReviewById = (request, response, next) => {
+  selectReviewById(request.params.review_id)
+    .then((review) => response.status(200).send({ review }))
+    .catch(next);
+};

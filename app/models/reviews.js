@@ -12,3 +12,18 @@ exports.selectAllReviews = () => {
     )
     .then((result) => result.rows);
 };
+
+exports.selectReviewById = (id) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `No review with ID ${id} in the database`,
+        });
+      } else {
+        return result.rows[0];
+      }
+    });
+};
