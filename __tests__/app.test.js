@@ -116,10 +116,10 @@ describe("5. GET /api/reviews/:review_id", () => {
 
   it("returns a 404 when given a valid id, but one that does not exist in the database", () => {
     return request(app)
-      .get("/api/reviews/12")
+      .get("/api/reviews/500")
       .expect(404)
       .then(({ body: { message } }) => {
-        expect(message).toBe("No review with ID 12 in the database");
+        expect(message).toBe("No review with ID 500 in the database");
       });
   });
 
