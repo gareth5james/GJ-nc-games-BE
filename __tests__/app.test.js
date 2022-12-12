@@ -44,27 +44,3 @@ describe("GET /api/categories", () => {
       });
   });
 });
-
-describe("GET /api/reviews", () => {
-  it("returns status 200 and an array of review objects", () => {
-    return request(app)
-      .get("/api/reviews")
-      .expect(200)
-      .then(({ body: { reviews } }) => {
-        expect(reviews).toHaveLength(13);
-
-        reviews.forEach((review) => {
-          expect(review).toEqual(
-            expect.objectContaining({
-              owner: expect.any(String),
-              title: expect.any(String),
-              review_id: expect.any(Number),
-              category: expect.any(String),
-              review_img_url: expect.any(String),
-              created_at: expect.any(Date),
-            })
-          );
-        });
-      });
-  });
-});
