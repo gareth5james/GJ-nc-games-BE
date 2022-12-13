@@ -222,7 +222,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
 
   it("returns status 404 when passed a review_id not in the database", () => {
     const newComment = {
-      username: "gareth",
+      username: "bainesface",
       body: "distinctly average",
     };
 
@@ -237,7 +237,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
 
   it("returns status 400 when passed a review_id with a bad data type", () => {
     const newComment = {
-      username: "gareth",
+      username: "bainesface",
       body: "distinctly average",
     };
 
@@ -252,7 +252,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
 
   it("returns status 400 when passed a faulty comment to add", () => {
     const newComment = {
-      use7name: "gareth",
+      use7name: "bainesface",
       body: "distinctly average",
     };
 
@@ -261,11 +261,11 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad data type");
+        expect(msg).toBe("Bad input");
       });
   });
 
-  it("returns status 400 when passed a comment with missing parts", () => {
+  it("returns status 400 when passed a comment with missing username", () => {
     const newComment = {
       body: "distinctly average",
     };
@@ -275,7 +275,35 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad data type");
+        expect(msg).toBe("Bad input");
+      });
+  });
+
+  it("returns status 400 when passed a comment with missing body", () => {
+    const newComment = {
+      username: "bainesface",
+    };
+
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad input");
+      });
+  });
+
+  it("returns status 404 when passed a username not in the database", () => {
+    const newComment = {
+      username: "gareth",
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Item not found");
       });
   });
 });
