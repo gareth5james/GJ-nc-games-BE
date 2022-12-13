@@ -9,3 +9,14 @@ exports.selectCommentsByReviewId = (id) => {
     )
     .then((result) => result.rows);
 };
+
+exports.addNewComment = (id, comment) => {
+  return db
+    .query(
+      `INSERT INTO comments 
+  (body, review_id, author, votes, created_at)
+  VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [comment.body, id, comment.username, 0, new Date(Date.now())]
+    )
+    .then((result) => result.rows[0]);
+};
