@@ -13,5 +13,7 @@ exports.sqlError = (error, request, response, next) => {
     response.status(400).send({ msg: "Bad data type" });
   } else if (error.code === "23503") {
     response.status(404).send({ msg: "Item not found" });
+  } else if (error.code === "23502") {
+    response.status(400).send({ msg: "Bad input" });
   } else next(error);
 };
