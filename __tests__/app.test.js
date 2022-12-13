@@ -17,8 +17,8 @@ describe("handles bad paths", () => {
     return request(app)
       .get("/api/banana")
       .expect(404)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("Bad path, not found");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad path, not found");
       });
   });
 });
@@ -120,8 +120,8 @@ describe("5. GET /api/reviews/:review_id", () => {
     return request(app)
       .get("/api/reviews/500")
       .expect(404)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("No review with ID 500 in the database");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Review not found");
       });
   });
 
@@ -129,8 +129,8 @@ describe("5. GET /api/reviews/:review_id", () => {
     return request(app)
       .get("/api/reviews/banana")
       .expect(400)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("Bad data type");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
       });
   });
 });

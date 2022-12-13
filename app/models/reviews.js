@@ -20,7 +20,7 @@ exports.selectReviewById = (id) => {
       if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          message: `No review with ID ${id} in the database`,
+          message: "Review not found",
         });
       } else {
         return result.rows[0];
