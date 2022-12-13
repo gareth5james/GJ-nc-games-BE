@@ -93,7 +93,7 @@ describe("GET /api/reviews", () => {
 });
 
 describe("5. GET /api/reviews/:review_id", () => {
-  it("returns 200 when given a valid in range id, with the chosen review", () => {
+  it("returns status 200 when given a valid in range id, with the chosen review", () => {
     return request(app)
       .get("/api/reviews/12")
       .expect(200)
@@ -114,7 +114,7 @@ describe("5. GET /api/reviews/:review_id", () => {
       });
   });
 
-  it("returns a 404 when given a valid id, but one that does not exist in the database", () => {
+  it("returns status 404 when given a valid id, but one that does not exist in the database", () => {
     return request(app)
       .get("/api/reviews/500")
       .expect(404)
@@ -123,7 +123,7 @@ describe("5. GET /api/reviews/:review_id", () => {
       });
   });
 
-  it("returns a 400 when passed an ID that is not a number", () => {
+  it("returns status 400 when passed an ID that is not a number", () => {
     return request(app)
       .get("/api/reviews/banana")
       .expect(400)
