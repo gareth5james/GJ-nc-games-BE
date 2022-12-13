@@ -194,3 +194,88 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("7. POST /api/reviews/:review_id/comments", () => {
+  it("returns status 201 and the newly posted comment", () => {
+    const newComment = {
+      username: "bainesface",
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/12/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            author: newComment.username,
+            body: newComment.body,
+            review_id: 12,
+            comment_id: 7,
+            votes: 0,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+
+  it("returns status 404 when passed a review_id not in the database", () => {
+    const newComment = {
+      username: "gareth",
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Item not found");
+      });
+  });
+
+  it("returns status 400 when passed a review_id with a bad data type", () => {
+    const newComment = {
+      username: "gareth",
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/chicken/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+
+  it("returns status 400 when passed a faulty comment to add", () => {
+    const newComment = {
+      use7name: "gareth",
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/chicken/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+
+  it("returns status 400 when passed a comment with missing parts", () => {
+    const newComment = {
+      body: "distinctly average",
+    };
+
+    return request(app)
+      .post("/api/reviews/chicken/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+});
