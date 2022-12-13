@@ -135,4 +135,62 @@ describe("5. GET /api/reviews/:review_id", () => {
   });
 });
 
-describe("6. GET /api/reviews/:review_id/comments", () => {});
+describe("6. GET /api/reviews/:review_id/comments", () => {
+  it("returns status 200 and an array of comment objects", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(3);
+
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              review_id: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  it("returns the comments in date order, most recent first", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  it("returns status 200 and an empty array when passed a review_id with no comments", () => {
+    return request(app)
+      .get("/api/reviews/12/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(0);
+      });
+  });
+
+  it("returns status 404 when given a review_id that does not exist", () => {
+    return request(app)
+      .get("/api/reviews/500/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Review not found");
+      });
+  });
+
+  it("returns status 400 when given a review_id with the wrong data type", () => {
+    return request(app)
+      .get("/api/reviews/artichoke/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+});
