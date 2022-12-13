@@ -257,7 +257,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
     };
 
     return request(app)
-      .post("/api/reviews/chicken/comments")
+      .post("/api/reviews/8/comments")
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -271,7 +271,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
     };
 
     return request(app)
-      .post("/api/reviews/chicken/comments")
+      .post("/api/reviews/6/comments")
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
