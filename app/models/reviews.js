@@ -42,12 +42,3 @@ exports.reviewExists = (id) => {
       }
     });
 };
-
-exports.updateReviewVotesById = (id, incVotes) => {
-  return db
-    .query(
-      `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *`,
-      [incVotes, id]
-    )
-    .then((result) => result.rows[0]);
-};
