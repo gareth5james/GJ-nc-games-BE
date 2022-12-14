@@ -10,13 +10,17 @@ const { categoryExists } = require("../models/categories.js");
 exports.getReviews = (request, response, next) => {
   const category = request.query.category;
   const sort_by = request.query.sort_by;
+  const order = request.query.order;
 
   if (category) {
-    Promise.all([selectAllReviews(category, sort_by), categoryExists(category)])
+    Promise.all([
+      selectAllReviews(category, sort_by, order),
+      categoryExists(category),
+    ])
       .then(([reviews]) => response.status(200).send({ reviews }))
       .catch(next);
   } else {
-    selectAllReviews(undefined, sort_by)
+    selectAllReviews(undefined, sort_by, order)
       .then((reviews) => response.status(200).send({ reviews }))
       .catch(next);
   }
