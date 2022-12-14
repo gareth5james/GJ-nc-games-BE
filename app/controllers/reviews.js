@@ -5,10 +5,21 @@ const {
   updateReviewVotesById,
 } = require("../models/reviews.js");
 
+const { categoryExists } = require("../models/categories.js");
+
 exports.getReviews = (request, response, next) => {
-  selectAllReviews()
-    .then((reviews) => response.status(200).send({ reviews }))
-    .catch(next);
+  const category = request.query.category;
+  const sort_by = request.query.sort_by;
+
+  if (category) {
+    Promise.all([selectAllReviews(category, sort_by), categoryExists(category)])
+      .then(([reviews]) => response.status(200).send({ reviews }))
+      .catch(next);
+  } else {
+    selectAllReviews(undefined, sort_by)
+      .then((reviews) => response.status(200).send({ reviews }))
+      .catch(next);
+  }
 };
 
 exports.getReviewById = (request, response, next) => {

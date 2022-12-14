@@ -1,16 +1,32 @@
 const db = require("../../db/connection.js");
 
-exports.selectAllReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.*, 
-    COUNT(comment_id) AS comment_count FROM reviews
-    LEFT JOIN comments ON comments.review_id = reviews.review_id 
-    GROUP BY owner, title, reviews.review_id, category, review_img_url,
-    reviews.created_at, reviews.votes, designer
-    ORDER BY reviews.created_at DESC;`
-    )
-    .then((result) => result.rows);
+exports.selectAllReviews = (category, sort_by = "created_at") => {
+  let modularQuery = `SELECT reviews.*, 
+  COUNT(comment_id) AS comment_count FROM reviews
+  LEFT JOIN comments ON comments.review_id = reviews.review_id`;
+
+  const queryArray = [];
+
+  if (category) {
+    modularQuery += ` WHERE category = $1`;
+
+    queryArray.push(category);
+  }
+
+  modularQuery += ` GROUP BY owner, title, reviews.review_id, category, review_img_url,
+  reviews.created_at, reviews.votes, designer`;
+
+  if (category) {
+    modularQuery += ` ORDER BY $2 DESC;`;
+  } else {
+    modularQuery += ` ORDER BY $1 DESC;`;
+  }
+
+  queryArray.push(`${sort_by}`);
+
+  console.log(modularQuery, queryArray);
+
+  return db.query(modularQuery, queryArray).then((result) => result.rows);
 };
 
 exports.selectReviewById = (id) => {
