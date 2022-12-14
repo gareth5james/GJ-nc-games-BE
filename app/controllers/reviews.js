@@ -12,18 +12,12 @@ exports.getReviews = (request, response, next) => {
   const sort_by = request.query.sort_by;
   const order = request.query.order;
 
-  if (category) {
-    Promise.all([
-      selectAllReviews(category, sort_by, order),
-      categoryExists(category),
-    ])
-      .then(([reviews]) => response.status(200).send({ reviews }))
-      .catch(next);
-  } else {
-    selectAllReviews(undefined, sort_by, order)
-      .then((reviews) => response.status(200).send({ reviews }))
-      .catch(next);
-  }
+  Promise.all([
+    selectAllReviews(category, sort_by, order),
+    categoryExists(category),
+  ])
+    .then(([reviews]) => response.status(200).send({ reviews }))
+    .catch(next);
 };
 
 exports.getReviewById = (request, response, next) => {

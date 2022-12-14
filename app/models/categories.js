@@ -7,6 +7,7 @@ exports.selectAllCategories = () => {
 };
 
 exports.categoryExists = (categoryName) => {
+  if (categoryName === undefined) return Promise.resolve(true);
   return db
     .query(`SELECT * FROM categories WHERE slug = $1`, [categoryName])
     .then((result) => {
