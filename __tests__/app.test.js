@@ -73,7 +73,7 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body: { reviews } }) => {
-        expect(reviews).toBeSortedBy("created_at", { descending: true });
+        expect(reviews).toBeSortedBy("created_at", { ascending: true });
       });
   });
 
@@ -439,7 +439,7 @@ describe("10. GET /api/reviews (queries)", () => {
       });
   });
 
-  it("returns as above with another category", () => {
+  it("returns as above with another category, 'social deduction'", () => {
     return request(app)
       .get("/api/reviews?category=social+deduction")
       .expect(200)
@@ -450,5 +450,34 @@ describe("10. GET /api/reviews (queries)", () => {
           expect(review.category).toBe("social deduction");
         });
       });
+  });
+
+  it("returns status 404 when asked for a category not in the database", () => {
+    return request(app)
+      .get("/api/reviews?category=potatoes")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Item not found");
+      });
+  });
+
+  it("returns status 200 and no rows when asked for a category in the database, but with no reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=children's+games")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(0);
+      });
+  });
+
+  describe("allows users to sort by different columns, defaulting to date(refer to origin test for default)", () => {
+    it("sorts by votes, and status 200", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=votes")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("votes", { descending: true });
+        });
+    });
   });
 });
