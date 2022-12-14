@@ -426,3 +426,29 @@ describe("9. GET /api/users", () => {
       });
   });
 });
+
+describe("10. GET /api/reviews (queries)", () => {
+  it("allows users to select a category 'dexterity' and then receive an array of reviews only of that category with a status 200", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(1);
+
+        expect(reviews[0].category).toBe("dexterity");
+      });
+  });
+
+  it("returns as above with another category", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(11);
+
+        reviews.forEach((review) => {
+          expect(review.category).toBe("social deduction");
+        });
+      });
+  });
+});
