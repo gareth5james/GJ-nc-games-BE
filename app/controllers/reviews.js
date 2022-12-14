@@ -16,3 +16,14 @@ exports.getReviewById = (request, response, next) => {
     .then((review) => response.status(200).send({ review }))
     .catch(next);
 };
+
+exports.patchReviewVotesById = (request, response, next) => {
+  const id = request.params.review_id;
+
+  Promise.all([
+    updateReviewVotesById(id, request.body.inc_votes),
+    reviewExists(id),
+  ])
+    .then(([review]) => response.status(200).send({ review }))
+    .catch(next);
+};
