@@ -426,3 +426,96 @@ describe("9. GET /api/users", () => {
       });
   });
 });
+
+describe("10. GET /api/reviews (queries)", () => {
+  it("allows users to select a category 'dexterity' and then receive an array of reviews only of that category with a status 200", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(1);
+
+        expect(reviews[0].category).toBe("dexterity");
+      });
+  });
+
+  it("returns as above with another category, 'social deduction'", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(11);
+
+        reviews.forEach((review) => {
+          expect(review.category).toBe("social deduction");
+        });
+      });
+  });
+
+  it("returns status 404 when asked for a category not in the database", () => {
+    return request(app)
+      .get("/api/reviews?category=potatoes")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Item not found");
+      });
+  });
+
+  it("returns status 200 and no rows when asked for a category in the database, but with no reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=children's+games")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(0);
+      });
+  });
+
+  describe("allows users to sort by different columns, defaulting to date", () => {
+    it("sorts by votes, and status 200", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=votes")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("votes", { descending: true });
+        });
+    });
+
+    it("sorts by other columns", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("owner", { descending: true });
+        });
+    });
+
+    it("rejects sort_by queries not in the allowed list to prevent SQL injection", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=givemeallyourdata")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not allowed");
+        });
+    });
+
+    describe("allows the user to change the order to ascending", () => {
+      it("sorts by votes, and status 200", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=votes&&order=asc")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            expect(reviews).toBeSortedBy("votes", { ascending: true });
+          });
+      });
+
+      it("rejects order queries not allowed", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=votes&&order=UPDATE+TABLE+etc")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Not allowed");
+          });
+      });
+    });
+  });
+});

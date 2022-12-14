@@ -5,3 +5,19 @@ exports.selectAllCategories = () => {
     return result.rows;
   });
 };
+
+exports.categoryExists = (categoryName) => {
+  if (categoryName === undefined) return Promise.resolve(true);
+  return db
+    .query(`SELECT * FROM categories WHERE slug = $1`, [categoryName])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Item not found",
+        });
+      } else {
+        return Promise.resolve(true);
+      }
+    });
+};
