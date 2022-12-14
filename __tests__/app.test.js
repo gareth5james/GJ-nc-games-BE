@@ -492,7 +492,7 @@ describe("10. GET /api/reviews (queries)", () => {
     it("rejects sort_by queries not in the allowed list to prevent SQL injection", () => {
       return request(app)
         .get("/api/reviews?sort_by=givemeallyourdata")
-        .expect(403)
+        .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Not allowed");
         });
@@ -511,7 +511,7 @@ describe("10. GET /api/reviews (queries)", () => {
       it("rejects order queries not allowed", () => {
         return request(app)
           .get("/api/reviews?sort_by=votes&&order=UPDATE+TABLE+etc")
-          .expect(403)
+          .expect(400)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("Not allowed");
           });

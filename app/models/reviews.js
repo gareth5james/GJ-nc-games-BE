@@ -24,7 +24,7 @@ exports.selectAllReviews = (
   const order_green = ["asc", "desc"];
 
   if (!sort_by_green.includes(sort_by) || !order_green.includes(order))
-    return Promise.reject({ status: 403, message: "Not allowed" });
+    return Promise.reject({ status: 400, message: "Not allowed" });
 
   const queryArray = [];
 
