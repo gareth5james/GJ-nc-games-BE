@@ -73,7 +73,7 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body: { reviews } }) => {
-        expect(reviews).toBeSortedBy("created_at", { ascending: true });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
 
@@ -470,7 +470,7 @@ describe("10. GET /api/reviews (queries)", () => {
       });
   });
 
-  describe("allows users to sort by different columns, defaulting to date(refer to origin test for default)", () => {
+  describe("allows users to sort by different columns, defaulting to date", () => {
     it("sorts by votes, and status 200", () => {
       return request(app)
         .get("/api/reviews?sort_by=votes")
@@ -478,6 +478,44 @@ describe("10. GET /api/reviews (queries)", () => {
         .then(({ body: { reviews } }) => {
           expect(reviews).toBeSortedBy("votes", { descending: true });
         });
+    });
+
+    it("sorts by other columns", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("owner", { descending: true });
+        });
+    });
+
+    it("rejects sort_by queries not in the allowed list to prevent SQL injection", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=givemeallyourdata")
+        .expect(403)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not allowed");
+        });
+    });
+
+    describe("allows the user to change the order to ascending", () => {
+      it("sorts by votes, and status 200", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=votes&&order=asc")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            expect(reviews).toBeSortedBy("votes", { ascending: true });
+          });
+      });
+
+      it("rejects order queries not allowed", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=votes&&order=UPDATE+TABLE+etc")
+          .expect(403)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Not allowed");
+          });
+      });
     });
   });
 });
