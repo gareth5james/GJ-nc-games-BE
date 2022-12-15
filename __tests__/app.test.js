@@ -520,6 +520,7 @@ describe("10. GET /api/reviews (queries)", () => {
   });
 });
 
+11.GET/api/reviews/-review-id-comment-count
 describe("11. GET /api/reviews/:review_id (comment count)", () => {
   it("now includes a key of comment_count on the resutned item, showing the number of comments for the review", () => {
     return request(app)
@@ -531,6 +532,32 @@ describe("11. GET /api/reviews/:review_id (comment count)", () => {
             comment_count: "3",
           })
         );
+
+describe("12. DELETE /api/comments/:comment_id", () => {
+  it("returns a status 204 and no content", () => {
+    return request(app)
+      .delete("/api/comments/6")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  it("returns a status 404 when the review_id is not present in the database", () => {
+    return request(app)
+      .delete("/api/comments/7")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("Comment not found");
+      });
+  });
+
+  it("returns a status 400 when given a review_id that is not a number", () => {
+    return request(app)
+      .delete("/api/comments/shoes")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("Bad data type");
       });
   });
 });
