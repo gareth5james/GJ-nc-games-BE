@@ -695,3 +695,30 @@ describe("13. GET /api", () => {
       });
   });
 });
+
+describe("17. GET /api/users/:username", () => {
+  it("returns status 200 and a specific user with the given username", () => {
+    return request(app)
+      .get("/api/users/philippaclaire9")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: "philippaclaire9",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+            name: "philippa",
+          })
+        );
+      });
+  });
+
+  it("returns status 404 if given a username not in the database", () => {
+    return request(app)
+      .get("/api/users/notausername")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User not found");
+      });
+  });
+});
