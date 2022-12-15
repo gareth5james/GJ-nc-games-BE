@@ -11,6 +11,7 @@ const {
 const {
   getCommentsByReviewId,
   postNewComment,
+  deleteComment,
 } = require("./controllers/comments.js");
 
 const { getUsers } = require("./controllers/users.js");
@@ -27,6 +28,7 @@ app.patch("/api/reviews/:review_id", patchReviewVotesById);
 
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postNewComment);
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.get("/api/users", getUsers);
 
