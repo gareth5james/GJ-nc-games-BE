@@ -1,6 +1,8 @@
 const {
   selectCommentsByReviewId,
   addNewComment,
+  dropComment,
+  commentExists,
 } = require("../models/comments.js");
 
 const { reviewExists } = require("../models/reviews.js");
@@ -21,6 +23,16 @@ exports.postNewComment = (request, response, next) => {
   Promise.all([addNewComment(id, request.body), reviewExists(id)])
     .then(([comment]) => {
       response.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (request, response, next) => {
+  const id = request.params.comment_id;
+
+  Promise.all([dropComment(id), commentExists(id)])
+    .then(() => {
+      response.sendStatus(204);
     })
     .catch(next);
 };
