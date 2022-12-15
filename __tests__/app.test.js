@@ -520,6 +520,19 @@ describe("10. GET /api/reviews (queries)", () => {
   });
 });
 
+11.GET/api/reviews/-review-id-comment-count
+describe("11. GET /api/reviews/:review_id (comment count)", () => {
+  it("now includes a key of comment_count on the resutned item, showing the number of comments for the review", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual(
+          expect.objectContaining({
+            comment_count: "3",
+          })
+        );
+
 describe("12. DELETE /api/comments/:comment_id", () => {
   it("returns a status 204 and no content", () => {
     return request(app)
