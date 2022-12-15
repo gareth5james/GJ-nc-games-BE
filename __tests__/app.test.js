@@ -519,3 +519,18 @@ describe("10. GET /api/reviews (queries)", () => {
     });
   });
 });
+
+describe("11. GET /api/reviews/:review_id (comment count)", () => {
+  it("now includes a key of comment_count on the resutned item, showing the number of comments for the review", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual(
+          expect.objectContaining({
+            comment_count: "3",
+          })
+        );
+      });
+  });
+});
