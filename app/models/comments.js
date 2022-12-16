@@ -47,3 +47,14 @@ exports.dropComment = (id) => {
       return response;
     });
 };
+
+exports.updateCommentById = (id, incVotes) => {
+  return db
+    .query(
+      `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *`,
+      [incVotes, id]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};

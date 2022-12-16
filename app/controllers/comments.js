@@ -3,6 +3,7 @@ const {
   addNewComment,
   dropComment,
   commentExists,
+  updateCommentById,
 } = require("../models/comments.js");
 
 const { reviewExists } = require("../models/reviews.js");
@@ -33,6 +34,19 @@ exports.deleteComment = (request, response, next) => {
   Promise.all([dropComment(id), commentExists(id)])
     .then(() => {
       response.sendStatus(204);
+    })
+    .catch(next);
+};
+
+exports.patchComment = (request, response, next) => {
+  const id = request.params.comment_id;
+
+  Promise.all([
+    updateCommentById(id, request.body.inc_votes),
+    commentExists(id),
+  ])
+    .then(([comment]) => {
+      response.status(200).send({ comment });
     })
     .catch(next);
 };

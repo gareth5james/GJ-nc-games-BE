@@ -14,7 +14,6 @@ exports.selectUserByUsername = (username) => {
           message: "User not found",
         });
       } else {
-        console.log(result.rows[0]);
         return result.rows[0];
       }
     });

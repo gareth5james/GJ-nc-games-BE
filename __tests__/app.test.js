@@ -722,3 +722,83 @@ describe("17. GET /api/users/:username", () => {
       });
   });
 });
+
+describe("18. IncVotes PATCH/api/comments/:comment_id", () => {
+  it("returns status 200 and the updated comment", () => {
+    const voter = {
+      inc_votes: 20,
+    };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(voter)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: "I loved this game too!",
+            votes: 36,
+            author: "bainesface",
+            review_id: 2,
+            created_at: "2017-11-22T12:43:33.389Z",
+          })
+        );
+      });
+  });
+
+  it("returns status 404 when the comment_id is not in the database", () => {
+    const voter = {
+      inc_votes: 20,
+    };
+
+    return request(app)
+      .patch("/api/comments/400")
+      .send(voter)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Comment not found");
+      });
+  });
+
+  it("returns status 400 when passed a bad input object", () => {
+    const voter = {
+      inc_totes: 20,
+    };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(voter)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad input");
+      });
+  });
+
+  it("returns status 400 when passed a non number to alter the votes by", () => {
+    const voter = {
+      inc_votes: "cheese",
+    };
+
+    return request(app)
+      .patch("/api/comments/1")
+      .send(voter)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+
+  it("returns status 400 when passed a comment_id that is not a number", () => {
+    const voter = {
+      inc_votes: 50,
+    };
+
+    return request(app)
+      .patch("/api/comments/lettuce")
+      .send(voter)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad data type");
+      });
+  });
+});
