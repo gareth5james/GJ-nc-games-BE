@@ -6,7 +6,7 @@ It holds details of users, their reviews of games (split into categories) and co
 
 ## Hosted Version
 
-- Link: https://nc-games.onrender.com/
+- Link: https://nc-games.onrender.com/api
 
 Make a GET request to /api for details of available endpoints.
 
