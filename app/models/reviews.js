@@ -19,6 +19,7 @@ exports.selectAllReviews = (
     "category",
     "created_at",
     "votes",
+    "comment_count",
   ];
 
   const order_green = ["asc", "desc"];
