@@ -804,5 +804,30 @@ describe("18. IncVotes PATCH/api/comments/:comment_id", () => {
 });
 
 describe("19. POST /api/reviews", () => {
-  it("returns status 201 and the new review", () => {});
+  it("returns status 201 and the new review", () => {
+    const newReview = {
+      owner: "philippaclaire9",
+      title: "A very excellent game of some sort",
+      review_body: "10/10 would play again",
+      designer: "John Designer",
+      category: "euro game",
+    };
+
+    return request(app)
+      .post("/api/reviews")
+      .send(newReview)
+      .expect(201)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual(
+          expect.objectContaining({
+            owner: "philippaclaire9",
+            title: "A very excellent game of some sort",
+            review_body: "10/10 would play again",
+            designer: "John Designer",
+            category: "euro game",
+            review_id: expect.any(Number),
+          })
+        );
+      });
+  });
 });

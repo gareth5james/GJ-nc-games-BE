@@ -86,3 +86,22 @@ exports.updateReviewVotesById = (id, incVotes) => {
     )
     .then((result) => result.rows[0]);
 };
+
+exports.addNewReview = (review) => {
+  return db
+    .query(
+      `INSERT INTO reviews 
+  (owner, title, review_body, designer, category, votes)
+  VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [
+        review.owner,
+        review.title,
+        review.review_body,
+        review.designer,
+        review.category,
+        0,
+      ]
+    )
+    .then((result) => result.rows[0])
+    .catch((error) => console.log(error));
+};

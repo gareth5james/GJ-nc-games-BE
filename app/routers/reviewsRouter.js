@@ -9,9 +9,10 @@ const {
   getReviews,
   getReviewById,
   patchReviewVotesById,
+  postReview,
 } = require("../controllers/reviews.js");
 
-reviewsRouter.route("/").get(getReviews);
+reviewsRouter.route("/").get(getReviews).post(postReview);
 
 reviewsRouter
   .route("/:review_id")

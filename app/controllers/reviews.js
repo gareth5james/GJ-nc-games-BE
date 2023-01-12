@@ -3,6 +3,7 @@ const {
   selectReviewById,
   reviewExists,
   updateReviewVotesById,
+  addNewReview,
 } = require("../models/reviews.js");
 
 const { categoryExists } = require("../models/categories.js");
@@ -34,5 +35,15 @@ exports.patchReviewVotesById = (request, response, next) => {
     reviewExists(id),
   ])
     .then(([review]) => response.status(200).send({ review }))
+    .catch(next);
+};
+
+exports.postReview = (request, response, next) => {
+  const newReview = request.body;
+
+  Promise.all([addNewReview(request.body), categoryExists(newReview.category)])
+    .then(([review]) => {
+      response.status(201).send({ review });
+    })
     .catch(next);
 };
