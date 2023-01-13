@@ -102,6 +102,5 @@ exports.addNewReview = (review) => {
         0,
       ]
     )
-    .then((result) => result.rows[0])
-    .catch((error) => console.log(error));
+    .then((result) => result.rows[0]);
 };
