@@ -1,6 +1,6 @@
 # House of Games API
 
-In it's current form this repo contains the backend of review database.
+In it's current form this repo contains the backend of a board game review database.
 
 It holds details of users, their reviews of games (split into categories) and comments on those reviews.
 
